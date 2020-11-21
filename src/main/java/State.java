@@ -52,7 +52,7 @@ public class State {
 
   /**
    *
-   * @return 获取出度的边
+   * @return 状态迁移的边
    */
   public HashSet< Object > getEdgeSet(){
     return(outGoingEdges);
@@ -67,9 +67,9 @@ public class State {
   }
 
   /**
+   * 当收到输入的字符后，
+   * @return 状态迁移后的状态
    *
-   * @return 下一状态
-   *  当收到输入的字符后，
    */
   public  Edge getNextState(String inputSymbol) throws  NoNextStateException{
     for ( Object outGoingEdge : outGoingEdges ) {
@@ -78,9 +78,7 @@ public class State {
         return (temp);
       }
     }
-    //当没有对应的下一个状态的时候。抛出异常
+    //当没有对应的状态迁移的时候。抛出异常
     throw new NoNextStateException(inputSymbol);
   }
-
-
 }// End of class State

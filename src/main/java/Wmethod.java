@@ -6,8 +6,6 @@ import java.util.*;
  * 这是W-method的主类。包含了定义状态机的数据结构，读取文件等
  * @author nyccc
  */
-
-
 public class Wmethod {
   /**
    * 在状态机中的最大状态数
@@ -125,7 +123,7 @@ public class Wmethod {
     //将转换分为三个部分：源，目标和标签。
     while(transitionTokens.hasMoreTokens()){
       token[tokensFound]=transitionTokens.nextToken();
-      Utilities.debugFSM("Next token: "+token[tokensFound]);
+      Utilities.debugFSM("下一个token: "+token[tokensFound]);
       tokensFound++;
     }// End of while
 
@@ -255,7 +253,7 @@ public class Wmethod {
       count++;
     }
     //输出读取文件中对应的转换关系
-    System.out.println("\nFrom \t Input/Output \t To");
+    System.out.println("\n开始状态 \t 状态转移 \t 结束状态");
     for (int i=0; i<MAX_STATES; i++){
       if(FSM[i]!=null){
         stateID=FSM[i].getID();
@@ -366,7 +364,6 @@ public class Wmethod {
    * @param args .
    */
    public static void main(String [] args){
-     
     /* System.out.println("Test Generation Using the W-method. V2.0. August 1, 2013\n");*/
      fileSource=new Scanner(System.in);
      //获取存储状态机的文件名
@@ -388,7 +385,6 @@ public class Wmethod {
      if(Utilities.fsmPrintSw) {
        printFSM (realInput);
      }
-     
      //生成测试树，见书131页： 生成特征集 ，137页生成测试树
      TestingTree transitionCover = new TestingTree(FSM, numberOfStates); 
      //生成P表和W-set 见书137
