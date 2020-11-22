@@ -29,13 +29,11 @@ public class State {
     description = "暂无描述.";
     //将传出边集初始化为空。
     outGoingEdges=new HashSet< Object > ();
-    //此状态的UIO序列。
-    //尚未找到UIO序列。
-    //状态标记在某些算法中很有用。
+    /* 此状态的UIO序列。
+     * 尚未找到UIO序列。
+     * 状态标记在某些算法中很有用。
+     */
   }
-  // Set (true), unset(false), and get mark.
-
-  // Add to visits, initialize visits, return visits.
 
   /**
    *  增加一个边到这个状态
@@ -81,4 +79,4 @@ public class State {
     //当没有对应的状态迁移的时候。抛出异常
     throw new NoNextStateException(inputSymbol);
   }
-}// End of class State
+}

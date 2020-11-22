@@ -1,5 +1,4 @@
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -48,55 +47,10 @@ public class Wmethod {
   private static final String[] INPUT_ARRAY = new String[MAX_INPUTS];
   private static int countOutputs = 0;
   private static int countInputs = 0;
-  /**
-   * 读取目标文件的名称
-   */
+    /**
+    * 读取目标文件的名称
+    */
   private static Scanner fileSource;
-
-  /**
-   * 从源文件读取FSM描述的方法。
-   * 假设startState为1。
-   */
-  public static void getFSM (){
-    // 一个从输入的转换
-    String aTransition;
-    // 输入的状态ID（-1是无效ID）
-    //到目前为止尚未输入任何状态。
-    numberOfStates=0;
-    startState=1;
-    try{
-      //读取存储状态机的文件
-      BufferedReader fsmFile= new BufferedReader (new FileReader(fsmFilename));
-      aTransition=fsmFile.readLine();
-      //指示循环是否终止。
-      boolean done=false;
-      if (aTransition==null) {
-        done=true;
-      }
-
-      while (!done){
-        //状态机中的转换数量加一
-        numberOfTransitions++;
-        /* System.out.println("Next transition: "+numberOfTransitions+" "+aTransition); */
-        //将读取的转换进行分离，分别为状态，边，输入和输出
-        splitTransition(aTransition);
-        //读取下一个转换
-        aTransition=fsmFile.readLine();
-        //设置终止的条件，如果没有下一条的状态转换，终止。
-        if (aTransition==null || (numberOfTransitions==MAX_TRANSITIONS)) {
-          done=true;
-        }
-      }
-    }catch (FileNotFoundException e){
-      //没有找到状态机文件的输出
-      System.out.println("文件: "+fsmFilename+" 没有找到");
-      System.exit(0);
-    }catch (IOException e){
-      Utilities.printException("w算法"," 获取FSM","读取时引发了IO异常:"+
-              fsmFilename +"未找到");
-      Utilities.printException("w算法", "获取FSM", "转换输入： "+numberOfTransitions);
-    }
-  } //End getFSM()
 
   /**
    * 例如：
@@ -158,7 +112,7 @@ public class Wmethod {
     }catch(NumberFormatException e){
       Utilities.printException("Wmethod", "分离转换", "从状态ID必须是一个数字 "+token[1]);
       }
-    
+
     // 检查输出的标签是否曾经存在
     int traverser = 0;
     boolean found = false;
@@ -168,7 +122,7 @@ public class Wmethod {
         found = true;
         break;
       }
-      traverser++; 
+      traverser++;
     }
     // 将新的输出的标签加入数组
     if( ! found && ! "".equals(outputLabel)){
@@ -176,7 +130,7 @@ public class Wmethod {
       OUTPUT_ARRAY[countOutputs] = outputLabel;
       countOutputs++;
     }
-    
+
     // 检查输入标签是否已经出现。
     int traverse2 = 0;
     boolean found2 = false;
@@ -188,7 +142,7 @@ public class Wmethod {
       }
       traverse2++;
     }
-    
+
     // 将新的输入符号添加到输入数组。
     if( ! found2 && ! "".equals(inputLabel)){
       Utilities.debugFSM("添加 " + inputLabel + " 到输入数组的 " + countInputs + "位置.");
@@ -202,7 +156,7 @@ public class Wmethod {
       Utilities.debugFSM("状态ID:" + ID+ " 边起始ID" + ID);
       System.exit(0);
     }
-  } // End splitTransition()
+  }
 
   /**
    * @param edgeToken 将x/y形式的边缘标签拆分为x和y的方法。
@@ -225,7 +179,7 @@ public class Wmethod {
    */
   private static boolean newState(int stateID ){
     return FSM[stateID] == null;
-  }//End newState()
+  }
 
   /**
    * 打印输入FSM的所有状态和转换的方法。
@@ -274,16 +228,6 @@ public class Wmethod {
   }
 
   /**
-   *
-   * @return 输入的文件名为
-   */
-  private static String getFilename(){
-    //提示输入FSM的文件
-    System.out.print("输入FSM文件名: ");
-    return (fileSource.nextLine());
-  }
-
-  /**
    * 将输入的字符进行排序
    */
   public static void sortInputs(){
@@ -304,6 +248,15 @@ public class Wmethod {
       csize--;
     }
   }
+    /**
+     *
+     * @return 输入的文件名为
+     */
+    static String getFilename ( ){
+        //提示输入FSM的文件
+        System.out.print("输入FSM文件名: ");
+        return (fileSource.nextLine());
+    }
 
   /**
    *
@@ -321,45 +274,6 @@ public class Wmethod {
     }
 
   /**
-   *
-   * @param tree 测试树
-   * @param tableManager P表
-   * @return 测试用例
-   */
-  public static Vector<String> generateTests(TestingTree tree, pTableManager tableManager){
-    Vector pVector;
-    Vector wVector;
-    //用于存储生成的测试用例
-    Vector<String> testCases = new Vector<String>();
-    //获取过渡覆盖集（P）
-    pVector = tree.getPValues();
-    //获取W-set
-    wVector = tableManager.getW();
-    //过渡覆盖集包含空字符串。
-    pVector.add("");
-
-    /*
-     * 统计计算 P×W 从而生成测试用例
-     * 我们假设 m = n，
-     *         m是被测程序的FSM中的状态数
-     *         n是设计FSM中的状态数。
-     * 在集合乘法过程中可能会重复一些测试用例。
-     * 计算的过程可以参考：软件测试基础教程的 136页
-     * 链接：https://pan.baidu.com/s/1LLBbonc4Nt6uyOR8vclZ5w 提取码：Niuy
-     */
-    for ( Object s : pVector ) {
-       for ( Object o : wVector ) {
-         String wValue = ( String ) o;
-         String testCase = s + wValue;
-         if ( ! existsInVector (testCase, testCases) ) {
-           testCases.add (testCase);
-         }
-       }
-     }
-     return testCases;
-   }
-
-  /**
    * Main函数
    * @param args .
    */
@@ -367,13 +281,13 @@ public class Wmethod {
     /* System.out.println("Test Generation Using the W-method. V2.0. August 1, 2013\n");*/
      fileSource=new Scanner(System.in);
      //获取存储状态机的文件名
-     fsmFilename=getFilename();
+     fsmFilename= getFilename();
      // 初始化输出的数组
      Arrays.fill (OUTPUT_ARRAY, "");
      // 初始输入的数组
      Arrays.fill (INPUT_ARRAY, "");
      //获取状态机，决定输入和输出的字母表
-     getFSM ();
+     GetFSM.getFSM ();
      String [] realInput = new String [countInputs];
      //实数输入仅包含输入字母的元素。
      if ( realInput.length >= 0 ) {
@@ -390,7 +304,7 @@ public class Wmethod {
      //生成P表和W-set 见书137
      pTableManager w = new pTableManager(FSM, numberOfStates, realInput);
      // 生成测试
-     Vector <String> tests=generateTests(transitionCover, w);
+     Vector <String> tests= GenerateTestCase.generateTests(transitionCover, w);
      // 打印测试
      Utilities.printAllTestCases(tests);
      
